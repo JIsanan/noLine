@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+from Company import signals
+
 
 class Company(models.Model):
     user = models.OneToOneField(
@@ -8,4 +10,3 @@ class Company(models.Model):
         related_name='company',
         on_delete=models.CASCADE)
     company_name = models.CharField(max_length=128)
-    password = models.CharField(max_length=128)

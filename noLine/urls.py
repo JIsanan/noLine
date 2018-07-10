@@ -17,8 +17,17 @@ from django.contrib import admin
 from django.conf.urls import include
 from rest_framework import routers
 from django.urls import path
+from Company import views as company_views
+from Service import views as service_views
+
 
 router = routers.DefaultRouter()
+router.register(
+    r'register', company_views.RegisterViewSet, base_name="register")
+router.register(
+    r'login', company_views.LoginViewSet, base_name="login")
+router.register(
+    r'service', service_views.ServiceViewSet, base_name="service")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
