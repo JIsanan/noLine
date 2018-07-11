@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Rubik:300,300i,400,400i,500,500i|Source+Sans+Pro:200,400,400i,600,600i,700,700i');
+
+// fonts
+$display-font: 'Rubik';
+$body-font: 'Source Sans Pro', sans-serif;
+
+// font-sizes
+$base-size: 16px;
+
+// colors
+$black: #222222;
+$footer-black: #333333;
+$white: #ffffff;
+$light-gray: #f5f5f5;
+$medium-gray: #efefef;
+$gray: #8a8a8a;
+$dark-gray: #363636;
+$red: #ff3a3a;
+$light-blue: #60d2ff;
+$blue: #2eadee;
+$dark-blue: #2e7bee;
+$green: #219653;
+$yellow: #f2c94c;
+
+.verified{
+    color: green;
+}

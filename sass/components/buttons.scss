@@ -1,0 +1,132 @@
+input[type=button],
+button,
+a.button {
+  height: 32px;
+  font-size: .9em;
+  letter-spacing: .08em;
+  font-weight: 600;
+  color: hsl(0, 0, 25%);
+  background: $white;
+  cursor: pointer;
+  border: 0;
+  border-radius: 24px;
+  outline: none;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition-duration: 0.3s;
+
+  &.large {
+    height: 48px;
+    padding: 0 80px;
+  }
+
+  &.blue {
+    color: $white;
+    background: linear-gradient(180deg, #2EADEE 0%, rgba(46, 173, 238, 0.9) 100%);
+
+    &:hover {
+      box-shadow: 0px 4px 10px rgba(49, 163, 221, 0.5);
+    }
+
+    &:active {
+      background: darken($blue, 15%);
+    }
+  }
+
+  &.white {
+    color: $blue;
+    background: $white;
+  }
+
+  &.transparent {
+    background: none;
+
+    // transparent blue
+    @include transparent-button('blue', $blue);
+
+    // transparent gray
+    @include transparent-button('gray', $gray);
+  }
+
+  // bordered buttons
+  &.border {
+    border: 1px solid black;
+    background: none;
+
+    // white border
+    @include border-button('white', $white);
+
+    // blue border
+    @include border-button('blue', $blue);
+  }
+
+  &.no-border {
+    border: 0;
+  }
+
+  &.shadow {
+    &:hover {
+      box-shadow: 0 1px 4px hsla(0, 0, 25%, 0.4);
+    }
+
+    &:active {
+      box-shadow: 0 2px 10px hsla(0, 0, 10%, 0.4);
+    }
+  }
+
+  &.paginator {
+    height: 32px;
+    width: 32px;
+    display: flex;
+    justify-content: center;
+    color: $blue;
+    background: none;
+    border-radius: 50%;
+    transition-duration: 0s;
+    margin: 0 8px;
+    user-select: none;
+
+    &#active {
+      pointer-events: none;
+      background: $blue;
+      color: $white;
+    }
+
+    &:hover {
+      background: lighten($blue, 40%);
+    }
+
+    &:active {
+      background: $blue;
+      color: $white;
+    }
+  }
+}
+
+
+#btn-cancel-booking{
+  background: #EB5757;
+  width: 320px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  margin: 8px 0px;
+  vertical-align: middle;
+  cursor: pointer;
+  color: white;
+  transition-duration: 0.3s;
+
+  &:hover {
+      background: rgba(235, 87, 87, 0.9);
+    }
+
+
+}
+
+  .right{
+    align-self: flex-end;
+  }

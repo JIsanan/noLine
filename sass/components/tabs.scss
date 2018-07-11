@@ -1,0 +1,38 @@
+// landing page tabs
+.group {
+  padding: 0;
+  list-style-type: none;
+
+  li {
+    display: inline;
+    margin: auto 12px;
+
+    a {
+      padding: 12px 36px;
+      background: $light-gray;
+      color: $gray;
+      font-weight: 600;
+      border-radius: 4px;
+      text-decoration: none;
+      transition-duration: 0.4s;
+    }
+
+    a:hover {
+      cursor: pointer;
+      color: $dark-gray;
+    }
+
+    a:active {
+      background: $blue;
+      color: $white;
+    }
+  }
+
+  .active {
+    a {
+      background: $blue;
+      color: $white;
+      pointer-events: none;
+    }
+  }
+}

@@ -1,0 +1,58 @@
+@mixin select-background($color, $dropdown: '../img/dropdown.png') {
+  background: $color url($dropdown) calc(100% - 8px) no-repeat;
+}
+
+.select-box {
+  overflow: hidden;
+  height: 36px;
+
+  select {
+    @include select-background($white);
+
+    border: 0;
+    border-radius: 4px;
+    height: inherit;
+    width: 100%;
+    padding: 0 16px;
+    outline: none;
+    font-size: $base-size;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  select option {
+    padding: 0 20px;
+
+    &.option-header {
+      font-weight: bold;
+    }
+
+    select option[disabled] {
+      color: $dark-gray;
+    }
+  }
+}
+
+// hero select box (only for landing page)
+.hero-select {
+  height: 48px;
+  width: 600px;
+
+  select {
+    color: $gray;
+  }
+}
+
+// select box with borders
+.bordered {
+  height: 48px;
+  width: 500px;
+
+  select {
+    @include select-background($light-gray);
+
+    border: 1px solid $medium-gray;
+    color: $gray;
+  }
+}

@@ -1,0 +1,34 @@
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  display: inline-block;
+  vertical-align: bottom;
+  padding: 1px;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+
+  &.md-12 {
+    font-size: 12px;
+  }
+
+  &.md-16 {
+    font-size: 16px;
+  }
+
+  &.md-18 {
+    font-size: 18px;
+  }
+
+  &.md-32 {
+    font-size: 32px;
+  }
+}
