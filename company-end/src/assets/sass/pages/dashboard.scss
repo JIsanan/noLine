@@ -214,14 +214,11 @@
   }
 
   .bg-img{
-    background-image: url('/../../img/bg.jpg');
     background-size: cover;
     color: #ffffff;
     position: absolute;
     top: 0;
     left: 0;
-    width: 860px;
-    min-height: 600px;
     height: 100%;
     overflow: hidden;
     display: none;

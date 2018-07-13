@@ -9,7 +9,9 @@
         <input class="navbar-button white" type="button" name="join-us" value="Join us">
       </div>
     </div>
-    <div class="bg-img"></div>
+    <div class="img-container">
+      <img class="bg-img" src="../assets/img/bg.png">
+    </div>
     <section id="register-feed">
       <div class="form">
         <div class="input-form">
