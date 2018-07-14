@@ -20,17 +20,23 @@
           <form class="register-card">
             <div class="floating-placeholder">
               <label for="name">Company Name</label>
-              <input id="name" class="light" name="name" type="text"/>
+              <input v-model="companyName" class="light" type="text"/>
               <label for="email">Email Address</label>
-              <input id="email" class="light" name="name" type="text"/>
+              <input v-model="email" class="light" name="name" type="text"/>
               <label for="username">Username</label>
-              <input id="username" class="light" name="name" type="text"/>
+              <input v-model="username" class="light" name="name" type="text"/>
               <label for="password">Password</label>
-              <input id="password" class="light" name="name" type="text"/>
+              <input v-model="password" class="light" name="name" type="text"/>
               <label for="password1">Confirm Password</label>
-              <input id="password1" class="light" name="name" type="text"/>
+              <input v-model="confirmPassword" class="light" name="name" type="text"/>
               <div class="submit-form">
-              <button class="blue large btn-submit">  SIGN IN </button>
+              <button
+                type="button"
+                class="blue large btn-submit"
+                @click="register"
+              >
+                SIGN IN
+              </button>
               </div>
             </div>
           </form>
@@ -43,3 +49,35 @@
 <style lang="scss" scoped>
 @import "../assets/sass/styles.scss";
 </style>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      companyName: '',
+      email: '',
+      username: '',
+      password: '',
+      confirmPassword: '',
+    };
+  },
+
+  methods: {
+    register() {
+      axios.post('API_URL_HERE', {
+        company_name: this.companyName,
+        email: this.email,
+        username: this.username,
+        password: this.password,
+      }).then((response) => {
+        console.log(response);
+        if (response.data.message === 'Successful') {
+          this.$router.push('/login');
+        }
+      });
+    },
+  },
+};
+</script>
