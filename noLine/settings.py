@@ -25,8 +25,9 @@ SECRET_KEY = '*&i%28v#8fukia$)op!1sssf3&zvp1jka9&vjcs#v_a7bhe6z8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+ASGI_APPLICATION = "noLine.routing.application"
 
 # Application definition
 
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'ComputedServiceTime',
     'Feedback',
     'rest_framework.authtoken',
+    'channels',
 ]
 
 MIDDLEWARE = [

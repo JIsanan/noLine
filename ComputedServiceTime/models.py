@@ -8,5 +8,5 @@ class ComputedServiceTime(models.Model):
         related_name='computed_time',
         on_delete=models.CASCADE,
     )
-    time = models.TimeField()
-    probability = models.IntegerField()
+    std = models.FloatField()
+    drift = models.FloatField()

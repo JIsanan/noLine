@@ -15,14 +15,16 @@ class TellerViewSet(ViewSet, APIView):
     permission_classes = (IsAuthenticated,)
 
     @action(methods=['post'], detail=True)
-    def authenticate(self, request):
+    def authenticate(self, request, pk=None):
         obj = request.data
-        check = Teller.objects.filter(uuid=obj['uuid']).exists()
+        check = Teller.objects.filter(pk=pk, uuid=obj['uuid']).first()
         retList = {}
         if check:
             retList['message'] = 'successfully connected'
         else:
             retList['message'] = 'incorrect'
+        check.is_available = True
+        check.save()
         return Response(retList)
 
     @action(methods=['get'], detail=True)
@@ -47,7 +49,7 @@ class TellerViewSet(ViewSet, APIView):
         request.user = check
         return Response(retList)
 
-    @action(methods=['get'], detail=True)
+    @action(detail=False)
     def logout(self, request):
         uuid = request.META.get('AUTHORIZATION')
         check = Teller.objects.filter(uuid=uuid).first()
@@ -56,4 +58,6 @@ class TellerViewSet(ViewSet, APIView):
             retList['message'] = 'not a valid teller'
             return Response(retList)
         request.user = check
+        check.is_available = False
+        check.save()
         return Response(retList)

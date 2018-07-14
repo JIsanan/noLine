@@ -19,6 +19,8 @@ from rest_framework import routers
 from django.urls import path
 from Company import views as company_views
 from Service import views as service_views
+from Transaction import views as transaction_views
+from Teller import views as teller_views
 
 
 router = routers.DefaultRouter()
@@ -27,7 +29,13 @@ router.register(
 router.register(
     r'login', company_views.LoginViewSet, base_name="login")
 router.register(
+    r'getloggedin', company_views.CompanyViewSet, base_name="getloggedin")
+router.register(
     r'service', service_views.ServiceViewSet, base_name="service")
+router.register(
+    r'transaction', transaction_views.TransactionViewSet, base_name="teller")
+router.register(
+    r'teller', teller_views.TellerViewSet, base_name="teller")
 
 urlpatterns = [
     path('admin/', admin.site.urls),

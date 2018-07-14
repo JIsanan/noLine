@@ -10,3 +10,6 @@ class Service(models.Model):
         related_name='service',
         on_delete=models.CASCADE,
     )
+
+    def __str__(self):
+        return self.service_name.__str__()

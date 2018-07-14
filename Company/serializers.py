@@ -9,7 +9,7 @@ class RegisterUserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = (
-            'username', 'first_name', 'last_name', 'email', 'password')
+            'username', 'email', 'password')
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)

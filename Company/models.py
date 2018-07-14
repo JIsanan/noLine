@@ -10,3 +10,6 @@ class Company(models.Model):
         related_name='company',
         on_delete=models.CASCADE)
     company_name = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.company_name.__str__()

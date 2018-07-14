@@ -11,12 +11,15 @@ from Company.serializers import RegisterUserSerializer
 from Company.serializers import UserSerializer
 from Company.serializers import LoginSerializer
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 class RegisterViewSet(ViewSet, APIView):
 
     def create(self, request):
         obj = request.data
         retdict = {}
+        print(obj)
         x = RegisterUserSerializer(data=obj)
         if x.is_valid() is True:
             if request.data['company_name']:
@@ -55,4 +58,14 @@ class LoginViewSet(ViewSet, APIView):
         if user is not None:
             retdict['data'] = LoginSerializer(user).data
             retdict['message'] = 'log in successful'
+        return Response(retdict)
+
+class CompanyViewSet(ViewSet, APIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+
+    def list(self, request):
+        retdict = {}
+        retdict['user'] = CompanySerializer(request.user.company).data
+        retdict['message'] = 'successfully retrieved'
         return Response(retdict)
