@@ -6,6 +6,7 @@
 cd company-end
 ```
 
+### Install project dependencies
 ```
 npm install
 ```
