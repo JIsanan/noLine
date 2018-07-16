@@ -15,7 +15,9 @@ class Teller(models.Model):
         related_name='teller',
         on_delete=models.CASCADE,
         null=True,
+        blank=True,
     )
+    teller_number = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=False)
     availability = models.BooleanField(default=False)
     uuid = models.UUIDField('Unique Verification UUID', default=uuid.uuid4)

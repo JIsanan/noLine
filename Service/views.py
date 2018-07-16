@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from Service.models import Service
 from Service.serializer import ServiceSerializer
 from Teller.models import Teller
+from Transaction.models import Transaction
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
@@ -26,6 +27,8 @@ class ServiceViewSet(ViewSet, APIView):
             tellerlist = []
             for i in range(int(obj['teller_count'])):
                 tellerlist.append(Teller(service=service))
+            trans = Transaction(service=service, computed_time=0, priority_num='0-0', log=1, status='CP')
+            trans.save()
             Teller.objects.bulk_create(tellerlist)
             service = ServiceSerializer(service).data
             retdict['data'] = service

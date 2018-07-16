@@ -19,8 +19,6 @@ class Transaction(models.Model):
         choices=STATUS,
         default=AVAILABLE,
     )
-
-    time_ended = models.DateTimeField(null=True)
     uuid = models.UUIDField('Unique Verification UUID', default=uuid.uuid4)
     service = models.ForeignKey(
         Service,
@@ -34,7 +32,6 @@ class Transaction(models.Model):
     time_joined = models.DateTimeField(auto_now_add=True)
     priority_num = models.CharField(max_length=20)
     log = models.FloatField()
-
 
     def __str__(self):
         return self.uuid.__str__()
