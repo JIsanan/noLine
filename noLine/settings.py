@@ -141,7 +141,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-#ASGI_APPLICATION = 'mysite.routing.application'
+ASGI_APPLICATION = 'mysite.routing.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
