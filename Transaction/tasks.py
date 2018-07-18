@@ -5,6 +5,8 @@ from Teller.models import Teller
 from Transaction.models import Transaction
 from ComputedServiceTime.models import ComputedServiceTime
 from datetime import datetime, timedelta
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 import numpy
 
 
@@ -36,7 +38,7 @@ def lining():
 
 
 def queue(service):
-    userInQueue = Transaction.objects.filter(status='A', time_started=None).order_by('time_joined').all()
+    userInQueue = Transaction.objects.filter(status='A', time_started=None, service=service).order_by('time_joined').all()
     tellers = Teller.objects.filter(service=service)
     telleravail = tellers.filter(is_active=True, availability=True, service=service).all()
     if telleravail.count() > 0:
@@ -53,8 +55,31 @@ def queue(service):
                 user.time_started = datetime.now()
                 user.save()
                 i.save()
-        userInQueue = userInQueue[:idx]
+                layer = get_channel_layer()
+                async_to_sync(layer.group_send)('teller_' + str(service.pk), {
+                    'type': 'get.newcustomer',
+                    'tellerpk': i.pk,
+                    'pk': user.pk,
+                    'priority_num': user.priority_num,
+                })
+                async_to_sync(layer.group_send)('transaction_' + str(service.pk), {
+                    'type': 'get.usersturn',
+                    'transpk': user.pk,
+                    'teller_no': i.teller_number,
+                })
+        print(idx)
+        userInQueue = userInQueue[idx:]
+        print(userInQueue.count())
         for i in userInQueue:
+            print("yawaaa")
             indx = numpy.argmin(time)
             predicted = i.computed_time
             time[indx] += predicted
+            t = datetime.now() + timedelta(seconds=time[indx])
+            async_to_sync(layer.group_send)('transaction_' + str(service.pk), {
+                'type': 'get.changeofeta',
+                'transpk': i.pk,
+                'eta': t.strftime("%Y-%m-%d %H:%M:%S"),
+                'priority_num': user.priority_num,
+                'count': userInQueue.count(),
+            })

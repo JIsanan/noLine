@@ -9,7 +9,7 @@ import json
 
 class TellerConsumer(WebsocketConsumer):
     def connect(self):
-        group = 'teller_' + self.scope['url_route']['kwargs']['service_id']
+        group = 'teller_' + str(self.scope['url_route']['kwargs']['service_id'])
         service = Service.objects.filter(pk=group).exists()
         if service:
             async_to_sync(self.channel_layer.group_add)(

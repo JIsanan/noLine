@@ -48,8 +48,8 @@ INSTALLED_APPS = [
     'ComputedServiceTime',
     'Feedback',
     'rest_framework.authtoken',
-    'channels',
     'celery',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -133,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Manila'
 
 USE_I18N = True
 
@@ -141,7 +141,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-ASGI_APPLICATION = 'mysite.routing.application'
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',

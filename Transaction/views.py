@@ -24,11 +24,10 @@ class TransactionViewSet(ViewSet, APIView):
     def list(self, request):
         return Response("none")
 
-    @action(methods=['post'], detail=True)
-    def authenticate(self, request, pk=None):
+    @action(methods=['post'], detail=False)
+    def authenticate(self, request):
         uuid = request.data['uuid']
-        service = Service.objects.filter(pk=pk).first()
-        check = Transaction.objects.filter(service=service, uuid=uuid).first()
+        check = Transaction.objects.filter(uuid=uuid).first()
         retList = {}
         if not check:
             retList['message'] = 'not a valid customer'

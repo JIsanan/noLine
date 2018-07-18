@@ -2,6 +2,8 @@ from channels.auth import AuthMiddlewareStack
 from Teller.models import Teller
 from Transaction.models import Transaction
 
+from django.contrib.auth.models import AnonymousUser
+
 
 class EmployeeTellerMiddleware:
     """
@@ -14,12 +16,12 @@ class EmployeeTellerMiddleware:
     def __call__(self, scope):
         query = scope['query_string'].decode()
         token_name, token_key = query.replace('%20', ' ').split()
-        scope['user'] = 'does not exist'
-        if token_name == 'uuid':
-            token = Transaction.objects.get(uuid=token_key).first()
-            if token is None:
-                token = Teller.objects.get(uuid=token_key).first()
-                if token is not None:
+        scope['user'] = AnonymousUser()
+        if token_name == 'uuid=uuid':
+            token = Transaction.objects.get(uuid=token_key)
+            if not token:
+                token = Teller.objects.get(uuid=token_key)
+                if not token:
                     scope['user'] = token
             else:
                 scope['user'] = token
