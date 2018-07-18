@@ -7,6 +7,8 @@ class ComputedServiceTime(models.Model):
         Service,
         related_name='computed_time',
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     std = models.FloatField()
     drift = models.FloatField()

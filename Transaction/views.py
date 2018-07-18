@@ -17,6 +17,7 @@ from scipy.stats import norm
 from math import e
 import random
 import numpy
+import uuid
 
 
 class TransactionViewSet(ViewSet, APIView):
@@ -26,13 +27,42 @@ class TransactionViewSet(ViewSet, APIView):
 
     @action(methods=['post'], detail=False)
     def authenticate(self, request):
-        uuid = request.data['uuid']
-        check = Transaction.objects.filter(uuid=uuid).first()
+        uuidvar = request.data['uuid']
+        check = Transaction.objects.filter(uuid=uuid.UUID(uuidvar).hex).first()
         retList = {}
         if not check:
             retList['message'] = 'not a valid customer'
             return Response(retList)
-        request.user = check
+        if check.time_started is not None and check.status == 'A':
+            retList['message'] = 'it is your turn'
+            print(check.teller)
+            retList['teller_no'] = check.teller.first().teller_number
+            return Response(retList)
+        elif check.status == 'S':
+            retList['message'] = 'you have been skipped'
+            return Response(retList)
+        service = Service.objects.filter(pk=check.service.pk).first()
+
+        user_in_line = Transaction.objects.filter(status='A').order_by('time_joined').all()
+        tellers = service.teller.filter(is_active=True).count()
+        time = []
+        if tellers <= 0:
+            retList['message'] = "no available tellers"
+            return Response(retList)
+        for i in range(0,tellers):
+            time.append(0)
+        for i in user_in_line:
+            indx = numpy.argmin(time)
+            if i.pk == check.pk:
+                break;
+            predicted = i.computed_time
+            time[indx] += predicted
+        indx = numpy.argmin(time)
+        currentserved = Transaction.objects.filter(status='A', service=service, time_ended=None).exclude(time_started=None).order_by('-time_started').first()
+        retList['message'] = "successfully logged in"
+        retList['waiting_time'] = time[indx]
+        retList['priority_number'] = check.priority_num
+        retList['currentserved'] = currentserved.priority_num
         return Response(retList)
 
     @action(methods=['get'], detail=True)
@@ -79,9 +109,12 @@ class TransactionViewSet(ViewSet, APIView):
         for idx,i in enumerate(company):
             if i.service_name is service.service_name:
                 priority_num = idx
-        user = user_in_line.reverse()[0]
-        priority_num = int(user.priority_num.split("-",1)[1]) + 1
-        priority_num = str(idx) + '-' + str(priority_num)
+        if user_in_line.count() > 0:
+            user = user_in_line.reverse()[0]
+            priority_num = int(user.priority_num.split("-",1)[1]) + 1
+            priority_num = str(idx) + '-' + str(priority_num)
+        else:
+            priority_num = str(idx) + '-1'
         transaction = Transaction(service=service, computed_time=predicted_waiting_time, log=1, priority_num=priority_num)
         transaction.save()
         retList['message'] = "successfully lined up"

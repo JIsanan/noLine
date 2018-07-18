@@ -10,9 +10,26 @@ from channels.layers import get_channel_layer
 import numpy
 
 
+
 @app.task
 def learn():
-    service = Service.objects.filter(pk=1).first()
+    Companylist = Company.objects.all()
+    for company in Companylist:
+        services = Service.objects.filter(company=company)
+        for service in services:
+            learnservice(service)
+
+
+@app.task
+def lining():
+    Companylist = Company.objects.all()
+    for company in Companylist:
+        services = Service.objects.filter(company=company)
+        for service in services:
+            queue(service)
+
+
+def learnservice(service):
     last_month = datetime.today() - timedelta(days=30)
     logs = Transaction.objects.filter(time_ended__gte=last_month).all()
     lists = []
@@ -26,15 +43,6 @@ def learn():
     service.std = std
     service.var = drift
     service.save()
-
-
-@app.task
-def lining():
-    Companylist = Company.objects.all()
-    for company in Companylist:
-        services = Service.objects.filter(company=company)
-        for service in services:
-            queue(service)
 
 
 def queue(service):
@@ -71,7 +79,6 @@ def queue(service):
         userInQueue = userInQueue[idx:]
         print(userInQueue.count())
         for i in userInQueue:
-            print("yawaaa")
             indx = numpy.argmin(time)
             predicted = i.computed_time
             time[indx] += predicted

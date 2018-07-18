@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'Company',
     'Service',
-    'Employee',
     'Teller',
     'Transaction',
     'ComputedServiceTime',
