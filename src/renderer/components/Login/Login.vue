@@ -42,8 +42,9 @@ export default {
         // hide loading indicator
       }
     },
-    onDecode() {
+    onDecode(content) {
       // Toggle flag only on successful login
+      console.log(content);
       this.paused = true;
     },
   },
