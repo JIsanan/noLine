@@ -1,6 +1,7 @@
 from channels.auth import AuthMiddlewareStack
 from Teller.models import Teller
 from Transaction.models import Transaction
+from Company.models import Company
 
 from django.contrib.auth.models import AnonymousUser
 
@@ -18,13 +19,21 @@ class EmployeeTellerMiddleware:
         token_name, token_key = query.replace('%20', ' ').split()
         scope['user'] = AnonymousUser()
         if token_name == 'uuid=uuid':
-            token = Transaction.objects.get(uuid=token_key)
+            token = Transaction.objects.filter(uuid=token_key).first()
             if not token:
-                token = Teller.objects.get(uuid=token_key)
-                if not token:
+                token = Teller.objects.filter(uuid=token_key).first()
+                if token:
                     scope['user'] = token
+                else:
+                    scope['user'] = 'no user'
             else:
                 scope['user'] = token
+        if token_name == 'pk=pk':
+            token = Company.objects.filter(pk=token_key).first()
+            if token:
+                scope['user'] = token
+            else:
+                scope['user'] = 'no user'
         return self.inner(scope)
 
 

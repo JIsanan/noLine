@@ -13,7 +13,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'liningcheck': {
         'task': 'Transaction.tasks.lining',
-        'schedule': 5,
+        'schedule': 1,
     },
     'learnphase': {
         'task': 'Transaction.tasks.learn',

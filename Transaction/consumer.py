@@ -15,16 +15,19 @@ class TransactionConsumer(WebsocketConsumer):
         servicetype = 'transaction_' + str(self.scope['url_route']['kwargs']['type'])
         self.room_group_name = group
         if service:
-            if servicetype is 0:
+            jsontext = {}
+            if servicetype == 'transaction_1':
                 service = service.company.pk
-                group = 'kiosk_' + service
+                group = 'kiosk_' + str(service)
             async_to_sync(self.channel_layer.group_add)(
                 group,
                 self.channel_name
             )
             self.accept()
-            jsontext = {}
-            jsontext['text'] = 'successfully connected'
+            jsontext['new_eta'] = ''
+            jsontext['current_served'] = ''
+            jsontext['teller'] = ''
+            jsontext['message'] = 'successfully connected'
             self.send(text_data=json.dumps(jsontext))
 
     def disconnect(self, close_code):
@@ -36,24 +39,48 @@ class TransactionConsumer(WebsocketConsumer):
 
     def get_changeofline(self, event):
         check = Service.objects.filter(pk=event['servicepk']).first()
-        if check:
+        if check.company.pk == self.scope['user'].pk:
             self.send(text_data=json.dumps({
-                'service_pk': event['servicepk'],
-                'numberofpeople': event['servicecount'],
+                'service_pk': str(event['servicepk']),
+                'number_of_people': str(event['amount']),
+                'message': 'line change',
+            }))
+
+    def get_changeofonline(self, event):
+        check = Service.objects.filter(pk=event['servicepk']).first()
+        if check.company.pk == self.scope['user'].pk:
+            self.send(text_data=json.dumps({
+                'service_pk': str(event['servicepk']),
+                'number_of_people': str(event['amount']),
+                'message': 'teller change',
             }))
 
     def get_changeofeta(self, event):
         user = Transaction.objects.filter(pk=event['transpk']).first()
         if user.uuid == self.scope['user'].uuid:
             self.send(text_data=json.dumps({
-                'newETA': event['eta'],
-                'currentserved': event['priority_num'],
+                'new_eta': str(event['eta']),
+                'current_served': str(event['priority_num']),
+                'message': 'eta change',
+                'teller': '',
             }))
 
     def get_usersturn(self, event):
         user = Transaction.objects.filter(pk=event['transpk']).first()
         if user.uuid == self.scope['user'].uuid:
             self.send(text_data=json.dumps({
-                'newETA': "it's the user's turn",
-                'teller': event['teller_no']
+                'new_eta': '',
+                'current_served': '',
+                'message': "user turn",
+                'teller': str(event['teller_no']),
+            }))
+
+    def get_userskipped(self, event):
+        user = Transaction.objects.filter(pk=event['transpk']).first()
+        if user.uuid == self.scope['user'].uuid:
+            self.send(text_data=json.dumps({
+                'new_eta': '',
+                'current_served': '',
+                'teller': '',
+                'message': "user skip",
             }))

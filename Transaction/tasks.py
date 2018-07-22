@@ -49,10 +49,13 @@ def queue(service):
     userInQueue = Transaction.objects.filter(status='A', time_started=None, service=service).order_by('time_joined').all()
     tellers = Teller.objects.filter(service=service)
     telleravail = tellers.filter(is_active=True, availability=True, service=service).all()
+    tellernotavail = tellers.filter(is_active=False, service=service).all()
     if telleravail.count() > 0:
         time = []
         for i in range(0,tellers.count()):
             time.append(0)
+        for i in tellernotavail:
+            time[i.teller_number] = 99999999
         idx = 0
         for idx, i in enumerate(telleravail):
             if userInQueue.count() > idx:
@@ -75,13 +78,21 @@ def queue(service):
                     'transpk': user.pk,
                     'teller_no': i.teller_number,
                 })
-        print(idx)
         userInQueue = userInQueue[idx:]
+        async_to_sync(layer.group_send)('teller_' + str(service.pk), {
+            'type': 'get.changeofamount',
+            'amount': userInQueue.count() 
+        })
+        async_to_sync(layer.group_send)('kiosk_' + str(service.pk), {
+            'type': 'get.changeofline',
+            'servicepk': service.company.pk,
+            'amount': userInQueue.count() 
+        })
         print(userInQueue.count())
         for i in userInQueue:
+            print(time)
             indx = numpy.argmin(time)
-            predicted = i.computed_time
-            time[indx] += predicted
+            predicted = i.computed_time 
             t = datetime.now() + timedelta(seconds=time[indx])
             async_to_sync(layer.group_send)('transaction_' + str(service.pk), {
                 'type': 'get.changeofeta',
@@ -90,3 +101,4 @@ def queue(service):
                 'priority_num': user.priority_num,
                 'count': userInQueue.count(),
             })
+            time[indx] += predicted

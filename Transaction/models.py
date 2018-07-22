@@ -8,11 +8,13 @@ class Transaction(models.Model):
     CANCELLED = 'C'
     AVAILABLE = 'A'
     COMPLETED = 'CP'
+    RESERVED = 'R'
     STATUS = (
         (SKIPPED, 'Skipped'),
         (CANCELLED, 'Cancel'),
         (AVAILABLE, 'Available'),
         (COMPLETED, 'Completed'),
+        (RESERVED, 'Reserved'),
     )
     status = models.CharField(
         max_length=2,
@@ -31,6 +33,8 @@ class Transaction(models.Model):
     computed_time = models.IntegerField()
     time_joined = models.DateTimeField(auto_now_add=True)
     priority_num = models.CharField(max_length=20)
+    phone_num = models.CharField(max_length=20, blank=True, null=True)
+    when_to_notify = models.PositiveIntegerField(null=True, blank=True)
     log = models.FloatField()
 
     def __str__(self):
