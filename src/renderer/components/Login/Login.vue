@@ -8,13 +8,18 @@
 <script>
 import 'vue-qrcode-reader/dist/vue-qrcode-reader.css';
 import { QrcodeReader } from 'vue-qrcode-reader/dist/vue-qrcode-reader.common';
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState } from 'vuex';
 
 export default {
   data() {
     return {
       paused: false,
+      want: null,
     };
+  },
+  computed: {
+    ...mapState('User', ['uuid',
+    ]),
   },
   methods: {
     async onInit(promise) {
@@ -45,6 +50,10 @@ export default {
       // Start of run only when successful login.
       this.paused = true;
       this.SET_UUID(content);
+      this.want = this.uuid;
+      this.$router.push({
+        path: '/priority/',
+      });
       // End of run only when successful login.
     },
     ...mapMutations('User', [

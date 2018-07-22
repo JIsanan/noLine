@@ -1,5 +1,5 @@
 const state = {
-  uuid: -1, // uuid is -1 if there is no active login.
+  uuid: '',
 };
 
 const mutations = {
@@ -7,13 +7,16 @@ const mutations = {
     state.uuid = uuid;
   },
   DELETE_UUID(state) {
-    state.uuid = -1;
+    state.uuid = '';
   },
 };
 
 const getters = {
   IS_LOGGED_IN(state) {
-    return state.uuid > 0;
+    return state.uuid.length > 0;
+  },
+  GET_UUID(state) {
+    return state.uuid;
   },
 };
 
