@@ -2,14 +2,13 @@
   <div>
     qrcode login:
     <qrcode-reader @init="onInit" @decode="onDecode" :paused="paused"></qrcode-reader>
-
-    For testing only: <router-link to="/priority/">Show me the priority view</router-link>
   </div>
 </template>
 
 <script>
 import 'vue-qrcode-reader/dist/vue-qrcode-reader.css';
 import { QrcodeReader } from 'vue-qrcode-reader/dist/vue-qrcode-reader.common';
+import { mapMutations } from 'vuex';
 
 export default {
   data() {
@@ -43,10 +42,14 @@ export default {
       }
     },
     onDecode(content) {
-      // Toggle flag only on successful login
-      console.log(content);
+      // Start of run only when successful login.
       this.paused = true;
+      this.SET_UUID(content);
+      // End of run only when successful login.
     },
+    ...mapMutations('User', [
+      'SET_UUID',
+    ]),
   },
   components: {
     QrcodeReader,

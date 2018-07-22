@@ -10,6 +10,7 @@
               <button class='buttonSkip large'>CANCEL</button>
           </div>
       </div>
+      <router-link to="/logout">Logout</router-link>
   </div>
 </template>
 
