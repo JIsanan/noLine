@@ -16,7 +16,7 @@ export default {
     ]),
   },
   mounted() {
-    axios.post('http://192.168.1.5:8000/teller/logout/', {
+    axios.post('http://192.168.254.235:8000/teller/logout/', {
       uuid: this.uuid,
     });
     this.DELETE_UUID();

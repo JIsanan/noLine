@@ -18,7 +18,8 @@ export default {
     };
   },
   computed: {
-    ...mapState('User', ['uuid',
+    ...mapState('User', [
+      'uuid',
     ]),
   },
   methods: {

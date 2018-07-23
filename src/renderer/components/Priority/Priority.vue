@@ -41,13 +41,13 @@ export default{
   }),
   mounted() {
     this.uuid = this.GET_UUID();
-    axios.post('http://192.168.1.5:8000/teller/authenticate/', {
+    axios.post(`${process.env.API_URL}/teller/authenticate/`, {
       uuid: this.uuid,
     }).then((response) => {
       if (response.data.message === 'successfully connected') {
         this.inline = this.data.amount_of_people;
         this.service_name = response.data.service_name;
-        this.chatSocket = new WebSocket(`ws://192.168.1.5:8000/ws/teller/${this.service_id}/?uuid=${this.authToken}`);
+        this.chatSocket = new WebSocket(`${process.env.WS_URL}/teller/${this.service_id}/?uuid=${this.authToken}`);
         this.chatSocket.onmessage = (e) => {
           this.data = JSON.parse(e.data);
           if (this.data.message === 'get new customer') {
@@ -61,7 +61,7 @@ export default{
       } else if (response.data.message === 'continue') {
         this.prioNum = response.data.priority_num;
         this.inline = response.data.amount_of_people;
-        this.chatSocket = new WebSocket(`ws://192.168.1.5:8000/ws/teller/${this.service_id}/?uuid=${this.authToken}`);
+        this.chatSocket = new WebSocket(`${process.env.WS_URL}/teller/${this.service_id}/?uuid=${this.authToken}`);
         this.chatSocket.onmessage = (e) => {
           this.data = JSON.parse(e.data);
           if (this.data.message === 'get new customer') {
@@ -80,15 +80,14 @@ export default{
   methods: {
     ...mapGetters('User', [
       'GET_UUID',
-    ],
-    ),
+    ]),
     onComplete() {
-      axios.post('http://192.168.1.5:8000/teller/finish/', {
+      axios.post(`${process.env.API_URL}/teller/finish/`, {
         uuid: this.uuid,
       });
     },
     onSkip() {
-      axios.post('http://192.168.1.5:8000/teller/skip/', {
+      axios.post(`${process.env.API_URL}/teller/skip/`, {
         uuid: this.uuid,
       });
     },

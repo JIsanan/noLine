@@ -1,15 +1,15 @@
 'use strict'
 
-process.env.BABEL_ENV = 'renderer'
+process.env.BABEL_ENV = 'renderer';
 
-const path = require('path')
-const { dependencies } = require('../package.json')
-const webpack = require('webpack')
+const path = require('path');
+const { dependencies } = require('../package.json');
+const webpack = require('webpack');
 
-const BabiliWebpackPlugin = require('babili-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const BabiliWebpackPlugin = require('babili-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 /**
  * List of node_modules to include in webpack bundle
@@ -123,7 +123,7 @@ let rendererConfig = {
         : false
     }),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
   ],
   output: {
     filename: '[name].js',
@@ -176,3 +176,5 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 module.exports = rendererConfig
+
+console.log(process.env.yourmom)

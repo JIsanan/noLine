@@ -6,6 +6,9 @@ const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
 
+const processVar = require('./env.js');
+processVar.init();
+
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 
 let mainConfig = {
@@ -49,7 +52,7 @@ let mainConfig = {
     path: path.join(__dirname, '../dist/electron')
   },
   plugins: [
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
   ],
   resolve: {
     extensions: ['.js', '.json', '.node']

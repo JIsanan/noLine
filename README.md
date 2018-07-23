@@ -9,3 +9,19 @@
 4. Install dependencies `npm install`
 5. Also make sure that libconf2-4 dependency is installed `sudo apt install libgconf2-4`
 6. Run in development mode `npm run dev`
+
+## Environment Variables
+1. `cd .electron-vue`
+2. `touch env.js`
+
+### Format
+```
+module.exports = {
+	init: () => {
+		// PROTOCOL://URL:PORT
+		// NO TRAILING FORWARD SLASH
+		process.env.API_URL = "http://url:port";
+		process.env.WS_URL = "ws://url:port/ws";
+	}
+}
+```
