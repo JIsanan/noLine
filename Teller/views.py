@@ -25,6 +25,8 @@ class TellerViewSet(ViewSet, APIView):
         if check:
             retList['message'] = 'successfully connected'
             retList['service_name'] = check.service.service_name
+            retList['service_pk'] = check.service.pk
+            retList['company_name'] = check.service.company.company_name
         else:
             retList['message'] = 'incorrect'
             return Response(retList)
@@ -56,6 +58,9 @@ class TellerViewSet(ViewSet, APIView):
         if check.is_active == False:
             retList['message'] = 'logged out'
             return Response(retList)
+        if not check.transaction:
+            retList['message'] = 'waiting'
+            return Response(retList)
         check.availability = True
         transaction = check.transaction
         transaction.status = 'S'
@@ -80,6 +85,9 @@ class TellerViewSet(ViewSet, APIView):
             return Response(retList)
         if check.is_active == False:
             retList['message'] = 'logged out'
+            return Response(retList)
+        if not check.transaction:
+            retList['message'] = 'waiting'
             return Response(retList)
         check.availability = True
         transaction = check.transaction

@@ -61,16 +61,16 @@ class TransactionConsumer(WebsocketConsumer):
             self.send(text_data=json.dumps({
                 'new_eta': str(event['eta']),
                 'current_served': str(event['priority_num']),
-                'message': 'eta change',
-                'teller': '',
+                'message': "eta change",
+                'teller': "",
             }))
 
     def get_usersturn(self, event):
         user = Transaction.objects.filter(pk=event['transpk']).first()
         if user.uuid == self.scope['user'].uuid:
             self.send(text_data=json.dumps({
-                'new_eta': '',
-                'current_served': '',
+                'new_eta': "",
+                'current_served': "",
                 'message': "user turn",
                 'teller': str(event['teller_no']),
             }))
@@ -79,8 +79,8 @@ class TransactionConsumer(WebsocketConsumer):
         user = Transaction.objects.filter(pk=event['transpk']).first()
         if user.uuid == self.scope['user'].uuid:
             self.send(text_data=json.dumps({
-                'new_eta': '',
-                'current_served': '',
-                'teller': '',
+                'new_eta': "",
+                'current_served': "",
+                'teller': "",
                 'message': "user skip",
             }))
