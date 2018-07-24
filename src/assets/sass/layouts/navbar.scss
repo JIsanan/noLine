@@ -1,0 +1,60 @@
+// landing page navbar
+#site-landing-header {
+  height: 64px;
+  width: inherit;
+  z-index: 500;
+  position: fixed;
+  transition-duration: 0.4s;
+
+  .container {
+    height: inherit;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+  }
+
+  &.scrolled {
+    background: $blue;
+  }
+
+  .navbar-image {
+    flex: 1;
+  }
+
+  .navbar-button {
+    margin-left: 16px;
+  }
+
+  p {
+    padding: 0 16px;
+  }
+}
+
+#site-navbar {
+  height: 56px;
+  width: 100%;
+  z-index: 500;
+  position: fixed;
+  transition-duration: 0.4s;
+
+  .container {
+    height: inherit;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+  }
+
+  .navbar-image {
+    flex: 1;
+  }
+
+  .navbar-button {
+    margin-left: 16px;
+  }
+
+  p {
+    padding: 0 16px;
+  }
+}

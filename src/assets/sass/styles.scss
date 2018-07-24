@@ -1,0 +1,21 @@
+@import 'icons';
+@import 'abstract/mixins';
+@import 'abstract/variables';
+@import 'base/reset';
+
+//components
+@import 'components/buttons';
+@import 'components/input';
+@import 'components/select-box';
+@import 'components/tabs';
+@import 'components/spinner';
+
+//layouts
+@import 'layouts/navbar';
+@import 'layouts/cards';
+
+//pages
+@import 'pages/dashboard';
+@import 'pages/landing';
+@import 'pages/service';
+@import 'pages/inqueue';
