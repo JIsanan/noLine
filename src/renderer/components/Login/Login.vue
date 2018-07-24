@@ -1,7 +1,12 @@
 <template>
-  <div>
-    qrcode login:
-    <qrcode-reader @init="onInit" @decode="onDecode" :paused="paused"></qrcode-reader>
+  <div class="qr-reader-container">
+    <div class="logo-container">
+      <img src="../../assets/img/logo.png" style="height: 100%;"/>
+    </div>
+    <div class="qr-title">Please Scan your Teller QR Code.</div>
+    <div class="qr-reader-box">
+      <qrcode-reader @init="onInit" @decode="onDecode" :paused="paused"></qrcode-reader>
+    </div>
   </div>
 </template>
 
@@ -15,6 +20,7 @@ export default {
     return {
       paused: false,
       want: null,
+      flag: null,
     };
   },
   computed: {
@@ -50,11 +56,16 @@ export default {
     onDecode(content) {
       // Start of run only when successful login.
       this.paused = true;
-      this.SET_UUID(content);
-      this.want = this.uuid;
-      this.$router.push({
-        path: '/priority/',
-      });
+      this.flag = content;
+      if (this.flag !== '') {
+        this.SET_UUID(content);
+        this.want = this.uuid;
+        this.$router.push({
+          path: '/priority/',
+        });
+      } else {
+        this.paused = false;
+      }
       // End of run only when successful login.
     },
     ...mapMutations('User', [
@@ -66,3 +77,7 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import "../../assets/sass/styles.scss";
+</style>

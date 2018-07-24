@@ -9,6 +9,9 @@ const webpack = require('webpack')
 const processVar = require('./env.js');
 processVar.init();
 
+console.log("in config");
+console.log(process.env.API_URL);
+
 const BabiliWebpackPlugin = require('babili-webpack-plugin')
 
 let mainConfig = {

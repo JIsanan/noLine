@@ -176,5 +176,3 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 module.exports = rendererConfig
-
-console.log(process.env.yourmom)
