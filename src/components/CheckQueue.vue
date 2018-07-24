@@ -1,13 +1,13 @@
 <template>
  <div class='pickprocess-container'>
-      <button class="tab-buttons now">
+      <router-link class="tab-buttons now" tag="button" to="/smsnotif">
         <div class="tab-header">Start Lining Up</div>
         <div class="tab-body">You will be placed at the last in line.</div>
-      </button>
-      <button class="tab-buttons later">
+      </router-link>
+      <router-link class="tab-buttons later" tag="button" to="/smsnotif">
         <div class="tab-header">Decide Later</div>
         <div class="tab-body">You may decide when to line up using our application.</div>
-      </button>
+      </router-link>
 </div>
 </template>
 

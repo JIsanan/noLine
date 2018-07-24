@@ -208,3 +208,13 @@ a.button {
   .right{
     align-self: flex-end;
   }
+
+  .back-button{
+    display:block;
+    height: 80px;
+    width: 180px;
+    border-radius: 8px;
+    margin: 12px 0px;
+    font-size: 32px;
+    font-weight: 800;
+  }
