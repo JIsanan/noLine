@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import About from '@/components/About';
 import Register from '@/components/Register';
 import Service from '@/components/Service';
 import InQueue from '@/components/InQueue';
@@ -15,12 +14,8 @@ export default new Router({
   routes: [
     {
       path: '/',
+      name: 'root',
       redirect: '/service',
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: About,
     },
     {
       path: '/register',
@@ -32,10 +27,7 @@ export default new Router({
       name: 'service',
       component: Service,
       beforeEnter: (to, from, next) => {
-        if (store.state.pk !== -1) {
-          // eslint-disable-next-line
-          store._mutations.SET_PK[0](-1);
-        }
+        store.commit('REMOVE_ALL');
         next();
       },
     },
@@ -43,6 +35,15 @@ export default new Router({
       path: '/inqueue',
       name: 'inqueue',
       component: InQueue,
+      beforeEnter: (to, from, next) => {
+        if (store.state.pk === -1) {
+          next({ name: 'service' });
+        } else if (store.state.lineLater.length === 0) {
+          next({ name: 'checkqueue' });
+        } else {
+          next();
+        }
+      },
     },
     {
       path: '/checkqueue',

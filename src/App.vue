@@ -28,7 +28,7 @@ export default {
     ]),
   },
   mounted() {
-    this.chatSocket = new WebSocket(`ws://192.168.254.135:8000/ws/customer/6/1/?pk=${this.authToken}`);
+    this.chatSocket = new WebSocket(`ws://192.168.254.135:8000/ws/customer/1/1/?pk=${this.authToken}`);
     this.chatSocket.onmessage = (e) => {
       this.data = JSON.parse(e.data);
       if (this.data.message === 'teller change') {

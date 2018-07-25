@@ -61,6 +61,7 @@
         display:flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
         color: white;
 
         .label-text{
@@ -135,3 +136,7 @@
     height: 100%;
 }
 
+.checkqueue-container{
+    width: 100%;
+    flex-direction:column;
+}

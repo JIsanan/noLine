@@ -16,12 +16,13 @@ input[type=text] {
   }
 
   &.smsnotif{
-    margin: 12px 0px 24px 0px;
+    width: 80%;
+    margin: 12px 0px 24px 4px;
+    padding: 0px 5%;
     height: 80px;
     font-size: 40px;
     font-weight: 600;
     color: $dark-gray;
-    text-align: center;
   }
 
 }
@@ -50,4 +51,23 @@ label{
     align-items: center;
   }
 
+}
+
+.input-forms{
+  display:flex;
+  flex-direction:row;
+
+  .sms-prefix{
+    width: 20%;
+    margin: 12px 4px 24px 0px;
+    height: 80px;
+    padding: 12px;
+    font-size: 40px;
+    font-weight: 600;
+    color: $dark-gray;
+    text-align: center;
+    background: white;
+    border: 1px solid $medium-gray;
+    border-radius: 4px;
+  }
 }

@@ -13,6 +13,7 @@
   "dependencies": {
     "animate.css": "^3.6.1",
     "axios": "^0.18.0",
+    "moment": "^2.22.2",
     "vue": "^2.5.2",
     "vue-qrcode-reader": "^0.8.5",
     "vue-router": "^3.0.1",
