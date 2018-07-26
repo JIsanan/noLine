@@ -17,6 +17,6 @@ app.conf.beat_schedule = {
     },
     'learnphase': {
         'task': 'Transaction.tasks.learn',
-        'schedule': 1,
+        'schedule': crontab(hour=0, minute=0,),
     },
 }
