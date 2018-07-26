@@ -53,6 +53,7 @@ def learnservice(service):
 
 def queue(service):
     userInQueue = Transaction.objects.filter(status='A', time_started=None, service=service).order_by('time_joined').all()
+    user_in_line = Transaction.objects.filter(status='A', service=service).order_by('time_joined').all()
     tellers = Teller.objects.filter(service=service)
     telleravail = tellers.filter(is_active=True, availability=True, service=service).all()
     telleravailactiveornot = tellers.filter(is_active=True, service=service).all()

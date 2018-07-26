@@ -28,13 +28,14 @@ class Transaction(models.Model):
         on_delete=models.CASCADE,
     )
 
+    mac = models.CharField(max_length=48, null=True, blank=True, default=None)
     time_started = models.DateTimeField(null=True, blank=True)
     time_ended = models.DateTimeField(null=True, blank=True)
     computed_time = models.IntegerField()
     time_joined = models.DateTimeField(auto_now_add=True)
     priority_num = models.CharField(max_length=20)
     phone_num = models.CharField(max_length=20, blank=True, null=True)
-    when_to_notify = models.PositiveIntegerField(null=True, blank=True)
+    when_to_notify = models.IntegerField(null=True, blank=True)
     log = models.FloatField()
 
     def __str__(self):

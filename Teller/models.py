@@ -19,5 +19,5 @@ class Teller(models.Model):
     )
     teller_number = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=False)
-    availability = models.BooleanField(default=False)
+    availability = models.BooleanField(default=True)
     uuid = models.UUIDField('Unique Verification UUID', default=uuid.uuid4)

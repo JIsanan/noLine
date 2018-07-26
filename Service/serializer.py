@@ -28,7 +28,7 @@ class ServiceSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_eta(self, obj):
         check = obj
-        user_in_line = Transaction.objects.filter(status='A', time_started=None, service=check).order_by('time_joined').all()
+        user_in_line = Transaction.objects.filter(status='A', service=check).order_by('time_joined').all()
         tellers = check.teller.count()
         tellersnotavail = check.teller.filter(is_active=False).all()
         time = []
