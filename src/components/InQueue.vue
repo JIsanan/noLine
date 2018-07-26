@@ -8,7 +8,7 @@
     </div>
     <div class='mainItem1'>
         <div class='ETAstyle'>
-          <span class='label-text' v-if="lineLater === 'true'">If you line now:</span>
+          <span class='label-text' v-if="lineLaterStatus === 'true'">If you line now:</span>
           <p class='label-text'>Estimated Service Time</p>
           <p class='data-text'>{{ parseDate() }}</p>
           <p class='label-text'>Priority Num #:</p>
@@ -44,6 +44,7 @@ export default {
     serviceTitle: '',
     serviceTime: '',
     priorityNum: '',
+    lineLaterStatus: false,
     qrURL: '',
   }),
   methods: {
@@ -65,6 +66,7 @@ export default {
   },
   mounted() {
     this.serviceTitle = this.serviceName;
+    this.lineLaterStatus = this.lineLater;
     axios.post(`http://192.168.254.135:8000/transaction/${this.pk}/joinqueue/`, {
       when_to_notify: this.peopleLeft,
       phone_num: this.phoneNum,
