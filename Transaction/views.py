@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.decorators import action
 from Service.models import Service
 from Service.serializer import ServiceSerializer
+from Service.serializer import ServiceETASerializer
 from Teller.models import Teller
 from Company.models import Company
 from Transaction.models import Transaction
@@ -18,6 +19,7 @@ from math import e
 import random
 import numpy
 import uuid
+import re
 
 from noLine.settings import API_KEY, API_SECRET
 import nexmo
@@ -33,9 +35,13 @@ class TransactionViewSet(ViewSet, APIView):
     @action(methods=['post'], detail=False)
     def authenticate(self, request):
         uuidvar = request.data['uuid']
+        retList = {}
+        UUID_PATTERN = re.compile(r'^[\da-f]{8}-([\da-f]{4}-){3}[\da-f]{12}$', re.IGNORECASE)
+        if not UUID_PATTERN.match(uuidvar):
+            retList['message'] = 'not a valid customer'
+            return Response(retList)
         print(uuidvar)
         check = Transaction.objects.filter(uuid=uuid.UUID(uuidvar).hex).first()
-        retList = {}
         if not check or check.status == 'C':
             retList['message'] = 'not a valid customer'
             return Response(retList)
@@ -90,7 +96,7 @@ class TransactionViewSet(ViewSet, APIView):
         retList['current_served'] = currentserved.priority_num
         return Response(retList)
 
-    @action(methods=['post'], detail=True)
+    @action(methods=['get'], detail=True)
     def getPriorityandWaiting(self, request, pk=None):
         check = Service.objects.filter(pk=pk).first()
         retList = {}
@@ -141,10 +147,19 @@ class TransactionViewSet(ViewSet, APIView):
         retList['service'] = data
         return Response(retList)
 
-    @action(methods=['post'], detail=True)
-    def joinqueue(self, request, pk=None):
+    @action(methods=['get'], detail=True)
+    def getscreen(self, request, pk=None):
+        company = Company.objects.filter(pk=pk).first()
+        data = ServiceETASerializer(company.service, many=True).data
+        retList = {}
+        retList['service'] = data
+        return Response(retList)
+
+    @action(methods=['post'], detail=False)
+    def joinreservedqueue(self, request):
         obj = request.data
-        service = Service.objects.filter(pk=pk).first()
+        transaction = Transaction.objects.filter(uuid=obj['uuid']).first()
+        service = transaction.service
         retList = {}
         if not service:
             retList['message'] = "service does not exist"
@@ -161,12 +176,13 @@ class TransactionViewSet(ViewSet, APIView):
         predicted_waiting_time = numpy.mean(l, axis=0)
         user_in_line = Transaction.objects.filter(status='A', time_started=None, service=service).order_by('time_joined').all()
         tellers = service.teller.filter(is_active=True).count()
+        totaltellers = service.teller.filter().count()
         time = []
         tellersnotavail = service.teller.filter(is_active=False).all()
-        if tellersnotavail.count() == tellers:
+        if tellersnotavail.count() == totaltellers:
             retList['message'] = "no available tellers"
             return Response(retList)
-        for i in range(0,tellers):
+        for i in range(0,totaltellers):
             time.append(0)
         for i in tellersnotavail:
             time[i.teller_number] = 9999999
@@ -187,12 +203,89 @@ class TransactionViewSet(ViewSet, APIView):
             priority_num = str(idx) + '-' + str(priority_num)
         else:
             priority_num = str(idx) + '-1'
-        if ('phone_num' in obj and 'when_to_notify' in obj) and (obj['phone_num'] != '' and int(obj['when_to_notify']) > 0):
+        if transaction.status == 'R':
+            transaction.status = 'A'
+            transaction.priority_num = priority_num
+            transaction.time_joined = datetime.now()
+            transaction.save()
+            currentserved = Transaction.objects.filter(status='A', service=service, time_ended=None).exclude(time_started=None).order_by('-time_started').first()
+            retList['message'] = 'successfully joined'
+            retList['teller_no'] = ''
+            retList['uuid'] = transaction.uuid
+            retList['time_joined'] = transaction.time_joined
+            retList['current_served'] = currentserved.priority_num
+            retList['service_name'] = service.service_name
+            retList['service_id'] = service.pk
+            retList['company_name'] = service.company.company_name
+        else:
+            retList['message'] = 'not eligible to join'
+            return Response(retList)
+        retList['message'] = "successfully lined up"
+        etaTime = datetime.now() + timedelta(seconds=time[indx])
+        retList['waiting_time'] = etaTime.strftime("%Y-%m-%d %H:%M:%S")
+        retList['priority_number'] = priority_num
+        return Response(retList)
+        return Response(retList)
+
+    @action(methods=['post'], detail=True)
+    def joinqueue(self, request, pk=None):
+        obj = request.data
+        service = Service.objects.filter(pk=pk).first()
+        print(API_KEY)
+        print(API_SECRET)
+        retList = {}
+        if not service:
+            retList['message'] = "service does not exist"
+            return Response(retList)
+        computed = ComputedServiceTime.objects.filter(Service=service).first()
+        std = computed.std
+        drift = computed.drift
+        l = []
+        for i in range(0,10):
+            rand = std * norm.ppf(random.uniform(0, 1))
+            start = Transaction.objects.filter(status='CP').order_by('-time_joined').first().time_started
+            end = Transaction.objects.filter(status='CP').order_by('-time_joined').first().time_ended
+            l.append((end - start).total_seconds() * (e**(drift + rand)))
+        predicted_waiting_time = numpy.mean(l, axis=0)
+        user_in_line = Transaction.objects.filter(status='A', time_started=None, service=service).order_by('time_joined').all()
+        tellers = service.teller.filter(is_active=True).count()
+        totaltellers = service.teller.filter().count()
+        time = []
+        tellersnotavail = service.teller.filter(is_active=False).all()
+        if tellersnotavail.count() == totaltellers:
+            retList['message'] = "no available tellers"
+            return Response(retList)
+        for i in range(0,totaltellers):
+            time.append(0)
+        for i in tellersnotavail:
+            time[i.teller_number] = 9999999
+        for i in user_in_line:
+            indx = numpy.argmin(time)
+            predicted = i.computed_time
+            time[indx] += predicted
+        indx = numpy.argmin(time)
+        if time[indx] == 9999999:
+            time[indx] = 0
+        company = service.company.service.all()
+        for idx,i in enumerate(company):
+            if i.service_name is service.service_name:
+                priority_num = idx
+        if user_in_line.count() > 0:
+            user = user_in_line.reverse()[0]
+            priority_num = int(user.priority_num.split("-",1)[1]) + 1
+            priority_num = str(idx) + '-' + str(priority_num)
+        else:
+            priority_num = str(idx) + '-1'
+        if ('phone_num' in obj and 'when_to_notify' in obj) and (obj['phone_num'] != ''):
             phone = obj['phone_num']
-            when = int(obj['when_to_notify'])
+            if(int(obj['when_to_notify']) <= 0):
+                when = 0
+            else:
+                when = int(obj['when_to_notify'])
         else:
             when = None
             phone = None
+        etaTime = datetime.now() + timedelta(seconds=time[indx])
         if 'uuid' in obj:
             transaction = Transaction.objects.filter(uuid=obj['uuid']).first()
             if transaction and transaction.status == 'R':
@@ -207,20 +300,18 @@ class TransactionViewSet(ViewSet, APIView):
                 retList['current_served'] = currentserved.priority_num
                 retList['service_name'] = service.service_name
                 retList['service_id'] = service.pk
-                retList['teller_no'] = service.teller.first().teller_number
                 retList['company_name'] = service.company.company_name
             else:
                 retList['message'] = 'not eligible to join'
                 return Response(retList)
         else:
             status = 'A'
-            if 'linelater' in obj:
+            if 'linelater' in obj and obj['linelater'] == 'true':
                 status = 'R'
             transaction = Transaction(status=status, service=service, computed_time=predicted_waiting_time, log=1, priority_num=priority_num, when_to_notify=when, phone_num=phone)
             transaction.save()
             retList['uuid'] = transaction.uuid
             if phone is not None:
-                etaTime = datetime.now() + timedelta(seconds=time[indx])
                 if status == 'A':
                     client.send_message({'from': 'noLine', 'to': phone, 'text': 'Thank you for using noLine! \n uuid '+str(transaction.uuid)+'\n ETA '+etaTime.strftime("%Y-%m-%d %H:%M:%S")+'\n Priority Number: '+priority_num+'\n'})
                 else:
@@ -228,6 +319,7 @@ class TransactionViewSet(ViewSet, APIView):
         retList['message'] = "successfully lined up"
         retList['waiting_time'] = etaTime.strftime("%Y-%m-%d %H:%M:%S")
         retList['priority_number'] = priority_num
+        print(retList)
         return Response(retList)
 
     @action(detail=False)

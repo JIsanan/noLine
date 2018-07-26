@@ -12,7 +12,9 @@ from rest_framework.authentication import TokenAuthentication
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
+import numpy as np
 from datetime import datetime, date, timedelta
+import pytz
 
 
 class TellerViewSet(ViewSet, APIView):
@@ -44,7 +46,12 @@ class TellerViewSet(ViewSet, APIView):
             'amount': telleravail.count(),
             'servicepk': check.service.pk, 
         })
-        print("wow")
+        async_to_sync(layer.group_send)('screen_' + str(check.service.company.pk), {
+            'type': 'get.changeofonlinescreen',
+            'is_active': 'true',
+            'servicepk': check.service.pk, 
+            'tellerpk': check.pk,
+        })
         return Response(retList)
 
     @action(methods=['post'], detail=False)
@@ -71,6 +78,12 @@ class TellerViewSet(ViewSet, APIView):
         async_to_sync(layer.group_send)('transaction_' + str(check.service.pk), {
             'type': 'get.userskipped',
             'transpk': transaction.pk,
+        })                
+        async_to_sync(layer.group_send)('screen_' + str(check.service.company.pk), {
+            'type': 'get.changeofscreen',
+            'servicepk': check.service.pk,
+            'tellerpk': check.pk,
+            'current': 'none',
         })
         retList['message'] = 'user has been skipped'
         return Response(retList)
@@ -92,10 +105,33 @@ class TellerViewSet(ViewSet, APIView):
         check.availability = True
         transaction = check.transaction
         transaction.status = 'CP'
+        print("why")
         transaction.time_ended = datetime.now()
+        previous = Transaction.objects.filter(status='CP', service=transaction.service).order_by('-time_joined').first()
+        currentstart = transaction.time_started.replace(tzinfo=None)
+        currentend = transaction.time_ended.replace(tzinfo=None)
+        currentduration = (currentend - currentstart).total_seconds()
+        print(previous)
+        print("why")
+        prevstart = previous.time_started.replace(tzinfo=None)
+        print("WOW")
+        prevend = previous.time_ended.replace(tzinfo=None)
+        print("START")
+        prevduration = (prevend - prevstart).total_seconds()
+        print(currentduration)
+        print(prevduration)
+        transaction.log = np.log(currentduration / prevduration)
+        print(transaction.log)
         transaction.save()
         check.transaction = None
-        check.save()
+        check.save()        
+        layer = get_channel_layer()
+        async_to_sync(layer.group_send)('screen_' + str(check.service.company.pk), {
+            'type': 'get.changeofscreen',
+            'servicepk': check.service.pk,
+            'tellerpk': check.pk,
+            'current': 'none',
+        })
         retList['message'] = 'user is done'
         return Response(retList)
 
@@ -116,5 +152,12 @@ class TellerViewSet(ViewSet, APIView):
             'type': 'get.changeofonline',
             'amount': telleravail.count(),
             'servicepk': check.service.pk, 
+            'tellerpk': check.pk,
+        })
+        async_to_sync(layer.group_send)('screen_' + str(check.service.company.pk), {
+            'type': 'get.changeofonlinescreen',
+            'is_active': 'false',
+            'servicepk': check.service.pk, 
+            'tellerpk': check.pk,
         })
         return Response(retList)
