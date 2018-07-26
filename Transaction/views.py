@@ -209,11 +209,15 @@ class TransactionViewSet(ViewSet, APIView):
             transaction.time_joined = datetime.now()
             transaction.save()
             currentserved = Transaction.objects.filter(status='A', service=service, time_ended=None).exclude(time_started=None).order_by('-time_started').first()
+            if not currentserved:
+                currentserved = 'none'
+            else:
+                currentserved = currentserved.priority_num
             retList['message'] = 'successfully joined'
             retList['teller_no'] = ''
             retList['uuid'] = transaction.uuid
             retList['time_joined'] = transaction.time_joined
-            retList['current_served'] = currentserved.priority_num
+            retList['current_served'] = currentserved
             retList['service_name'] = service.service_name
             retList['service_id'] = service.pk
             retList['company_name'] = service.company.company_name
