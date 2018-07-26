@@ -3,11 +3,12 @@
   <div class="inqueue-card-container">
     <div class='mainItem4'>
         <p class='serviceStyle'>
-          {{ serviceName }}
+          {{ serviceTitle }}
         </p>
     </div>
     <div class='mainItem1'>
         <div class='ETAstyle'>
+          <span class='label-text' v-if="lineLater === 'true'">If you line now:</span>
           <p class='label-text'>Estimated Service Time</p>
           <p class='data-text'>{{ parseDate() }}</p>
           <p class='label-text'>Priority Num #:</p>
@@ -40,6 +41,7 @@ import moment from 'moment';
 
 export default {
   data: () => ({
+    serviceTitle: '',
     serviceTime: '',
     priorityNum: '',
     qrURL: '',
@@ -58,11 +60,13 @@ export default {
       'phoneNum',
       'serviceName',
       'lineLater',
+      'peopleLeft',
     ]),
   },
   mounted() {
+    this.serviceTitle = this.serviceName;
     axios.post(`http://192.168.254.135:8000/transaction/${this.pk}/joinqueue/`, {
-      when_to_notify: 5,
+      when_to_notify: this.peopleLeft,
       phone_num: this.phoneNum,
       linelater: this.lineLater,
     }).then((response) => {

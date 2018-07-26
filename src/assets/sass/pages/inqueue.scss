@@ -71,6 +71,23 @@
     }      
 }
 
+.mainItem2{
+    padding: 10px 0px;
+    flex-direction:row;
+    align-items: center;
+    display:flex;
+    flex-wrap: wrap;  
+    justify-content: center ;
+
+    .label-text{
+        color: white;
+        padding-top: 0px;
+        font-size: 44px;
+        font-weight: 300;
+
+    }
+}
+
 .mainItem3{
     display: flex;
     flex-flow: wrap;
@@ -79,6 +96,7 @@
     justify-content: space-between;
     flex-direction:row;
 }
+
 .mainItem4 {
     .serviceStyle{
         color: white;

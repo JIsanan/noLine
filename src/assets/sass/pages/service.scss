@@ -8,8 +8,29 @@
     justify-content:center;
   }
 
+  .service-screen-container {
+    display: flex;
+    max-height: 1300px; /* Or whatever */ 
+    flex-wrap: wrap;
+    flex-direction:row;
+    align-items: flex-start;
+    justify-content:center;
+  }
+
   .instruction-row{
-    padding: 30px 30px 10px 30px;
+    padding: 10px 30px;
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    font-size: 52px;
+    color: $dark-gray;
+    align-items: center;
+    justify-content:center;
+    font-weight: 600;
+  }
+
+  .intro-row{
+    padding: 10px 30px;
     margin-bottom: 20px;
     width: 100%;
     display: flex;
@@ -34,6 +55,25 @@
     box-shadow: 0px 4px 10px hsla(219, 72%, 70%, 0.50);
 
     &:disabled{
+      background:rgb(192, 192, 203);  /* fallback for old browsers */
+      cursor: arrow;
+    }
+  } 
+
+  .service-screen{
+    display: flex;
+    background: linear-gradient(to right top, #0042a4, #005eb0, #0074af, #0087a7, #16979d);
+    width: 100%;  /* Or whatever */
+    height: 200px; /* Or whatever */
+    margin:0px 10px;
+    align-items: center;
+    justify-content:center;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px hsla(219, 72%, 70%, 0.50);
+
+    &:disabled{
       background:rgb(192, 192, 203)  /* fallback for old browsers */
 
     }
@@ -44,7 +84,7 @@
       font-size: 42px;
       color: white;
       padding-top: 30px;
-      padding-bottom: 80px;
+      padding-bottom: 30px;
   }
 .parent {
     height: 100%;
@@ -204,4 +244,35 @@
   flex-direction:row;
   align-items: center;
   justify-content:center; 
+}
+
+.full-width{
+  width: 100%;
+}
+
+.screen-card{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content:center;
+  width: 25%;  /* Or whatever */
+  margin: 0px 12px;
+}
+
+.teller-screen{
+  display: flex;
+  background: linear-gradient(to right top, #0042a4, #005eb0, #0074af, #0087a7, #16979d);
+  width: 100%;  /* Or whatever */
+  margin:10px 0px 0px 0px;
+  align-items: center;
+  justify-content:center;
+  flex-direction: column;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px hsla(219, 72%, 70%, 0.50);
+
+  &:disabled{
+    background:rgb(192, 192, 203)  /* fallback for old browsers */
+
+  }
 }

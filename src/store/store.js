@@ -10,6 +10,7 @@ export default new Vuex.Store({
     phoneNum: '',
     serviceName: '',
     lineLater: '',
+    peopleLeft: -1,
   },
   mutations: {
     SET_PK: (state, pk) => {
@@ -20,6 +21,9 @@ export default new Vuex.Store({
     },
     SET_PHONE: (state, phoneNum) => {
       state.phoneNum = `63${phoneNum}`;
+    },
+    SET_PEOPLE_LEFT: (state, peopleLeft) => {
+      state.peopleLeft = peopleLeft;
     },
     SET_LINE_STATUS: (state, lineFlag) => {
       state.lineLater = lineFlag;

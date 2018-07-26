@@ -31,7 +31,7 @@ export default {
     this.chatSocket = new WebSocket(`ws://192.168.254.135:8000/ws/customer/1/1/?pk=${this.authToken}`);
     this.chatSocket.onmessage = (e) => {
       this.data = JSON.parse(e.data);
-      if (this.data.message === 'teller change') {
+      if (this.data.message === 'teller change' && this.$route.name !== 'screen') {
         // eslint-disable-next-line
         if (parseInt(this.data.service_pk) === parseInt(this.pk) && parseInt(this.data.number_of_people) === 0) {
           this.SET_PK(-1);

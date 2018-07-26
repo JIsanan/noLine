@@ -24,6 +24,10 @@
   </div>
 </template>
 
+<style lang="scss" scoped>
+@import "../assets/sass/styles.scss";
+</style>
+
 <script>
 import axios from 'axios';
 import moment from 'moment';
@@ -39,10 +43,12 @@ export default{
   }),
   methods: {
     parseDate(date) {
-      if (date.length > 0)
-        return moment(date).fromNow(true);
-      else
-        return '-';
+      let ret = '-';
+      if (date.length > 0) {
+        ret = moment(date).fromNow(true);
+      }
+
+      return ret;
     },
     setService(name, pk) {
       this.$store.dispatch('SET_SERVICE', {
@@ -61,14 +67,13 @@ export default{
     ]),
   },
   mounted() {
-    axios.get('http://192.168.254.135:8000/transaction/1/getservice', {
+    axios.get('http://192.168.254.135:8000/transaction/1/getservice/', {
     }).then((response) => {
       this.services = response.data.service;
       this.chatSocket = new WebSocket(`ws://192.168.254.135:8000/ws/customer/1/1/?pk=${this.authToken}`);
       this.chatSocket.onmessage = (e) => {
         this.data = JSON.parse(e.data);
         if (this.data.message === 'line change') {
-          console.log('hewo');
           const data = this.data.service_pk;
           // eslint-disable-next-line
           this.ind = this.services.findIndex(function (service) {
@@ -89,6 +94,3 @@ export default{
   },
 };
 </script>
-<style lang="scss" scoped>
-@import "../assets/sass/styles.scss";
-</style>

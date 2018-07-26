@@ -25,6 +25,15 @@ input[type=text] {
     color: $dark-gray;
   }
 
+  &.notifnum{
+    width: 10%;
+    margin: 0px 24px;
+    height: 80px;
+    font-size: 40px;
+    font-weight: 600;
+    color: $dark-gray;
+  }
+
 }
 
 input, label{

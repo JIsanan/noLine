@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Register from '@/components/Register';
 import Service from '@/components/Service';
 import InQueue from '@/components/InQueue';
+import Screen from '@/components/Screen';
 import CheckQueue from '@/components/CheckQueue';
 import SMSNotif from '@/components/SMSNotif';
 import store from '../store/store';
@@ -16,6 +17,11 @@ export default new Router({
       path: '/',
       name: 'root',
       redirect: '/service',
+    },
+    {
+      path: '/screen',
+      name: 'screen',
+      component: Screen,
     },
     {
       path: '/register',

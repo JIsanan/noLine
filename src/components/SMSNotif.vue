@@ -20,6 +20,16 @@
           </div>
         </div>
     </div>
+    <div class='mainItem2'>
+          <span class='label-text'>Notify when only </span>
+            <input
+              type="text"
+              v-model="peopleNum"
+              :class="{animated: error, shake: error}"
+              class="notifnum"
+            >
+          <p class='label-text'>people are ahead of me.</p>
+    </div>
   </div>
   <div class='mainItem3'>
     <button class="back-button gray" @click="$router.push({ name: 'checkqueue' })">BACK</button>
@@ -45,12 +55,16 @@ import { mapMutations } from 'vuex';
 export default {
   data: () => ({
     phoneNum: '',
+    peopleNum: '3',
     error: false,
   }),
   methods: {
     setPhone() {
-      if (this.phoneNum.length > 0) {
+      if (this.phoneNum.length > 0 &&
+        (isNaN(Number(this.peopleNum)) &&
+        Number(this.peopleNum) > 0)) {
         this.SET_PHONE(this.phoneNum);
+        this.SET_PEOPLE_LEFT(Number(this.peopleNum));
         this.$router.push({ name: 'inqueue' });
       } else {
         this.error = true;
@@ -58,6 +72,7 @@ export default {
     },
     ...mapMutations([
       'SET_PHONE',
+      'SET_PEOPLE_LEFT',
     ]),
   },
 };
