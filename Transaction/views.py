@@ -9,7 +9,7 @@ from Teller.models import Teller
 from Company.models import Company
 from Transaction.models import Transaction
 from ComputedServiceTime.models import ComputedServiceTime
-
+from django.db.models import Q
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 
@@ -36,7 +36,9 @@ class TransactionViewSet(ViewSet, APIView):
     def authenticate(self, request):
         retList = {}
         retList['teller_no'] = ''
-        mac = Transaction.objects.filter(mac=request.data['mac'], status='A').first()
+        print(request.data['mac'])
+        mac = Transaction.objects.filter(Q(mac=request.data['mac']), Q(status='A') | Q(status='R')).first()
+        print(mac)
         if mac and request.data['uuid'] == '':
             uuidvar = mac.mac
             check = mac
@@ -52,6 +54,7 @@ class TransactionViewSet(ViewSet, APIView):
             retList['message'] = 'not your device'
             return Response(retList)
         if not check or check.status == 'C':
+            print('cancelled or not existing')
             retList['message'] = 'not a valid customer'
             return Response(retList)
         if not mac or (mac.uuid == check.uuid):
@@ -350,9 +353,9 @@ class TransactionViewSet(ViewSet, APIView):
             retList['uuid'] = transaction.uuid
             if phone is not None:
                 if status == 'A':
-                    client.send_message({'from': 'noLine', 'to': phone, 'text': 'Thank you for using noLine! \n uuid '+str(transaction.uuid)+'\n ETA '+etaTime.strftime("%Y-%m-%d %H:%M:%S")+'\n Priority Number: '+priority_num+'\n'})
+                    client.send_message({'from': 'noLine', 'to': phone, 'text': 'Thank you for using noLine! \n noLine Code: '+str(transaction.uuid)+'\n Estimated Time: '+etaTime.strftime("%Y-%m-%d %H:%M:%S")+'\n Priority Number: '+priority_num+'\n'})
                 else:
-                    client.send_message({'from': 'noLine', 'to': phone, 'text': 'Thank you for using noLine! \n uuid '+str(transaction.uuid)+'+\n'})
+                    client.send_message({'from': 'noLine', 'to': phone, 'text': 'Thank you for using noLine! \n noLine Code: '+str(transaction.uuid)+'+\n'})
         retList['message'] = "successfully lined up"
         retList['waiting_time'] = etaTime.strftime("%Y-%m-%d %H:%M:%S")
         retList['priority_number'] = priority_num

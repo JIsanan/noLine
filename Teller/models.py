@@ -21,3 +21,6 @@ class Teller(models.Model):
     is_active = models.BooleanField(default=False)
     availability = models.BooleanField(default=True)
     uuid = models.UUIDField('Unique Verification UUID', default=uuid.uuid4)
+
+    def __str__(self):
+        return self.service.service_name.__str__()
