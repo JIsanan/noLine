@@ -42,8 +42,8 @@ export default{
     Mikepad,
   },
   data: () => ({
-    API_URL: 'http://192.168.254.135:8000',
-    WS_URL: 'ws://192.168.254.135:8000/ws',
+    API_URL: 'http://192.168.1.5:8000',
+    WS_URL: 'ws://192.168.1.5:8000/ws',
     data: null,
     test: null,
     inline: null,
