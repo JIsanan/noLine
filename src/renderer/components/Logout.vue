@@ -3,20 +3,26 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 import axios from 'axios';
 
 export default {
   data: () => ({
-    uuid: '889d5bb11b79450e89aaca1c210744e7',
+    uuid: null,
   }),
   methods: {
     ...mapMutations('User', [
       'DELETE_UUID',
     ]),
   },
+  computed: {
+    ...mapGetters('User', [
+        'GET_UUID',
+      ]),
+  },
   mounted() {
-    axios.post('http://192.168.1.5:8000/teller/logout/', {
+    this.uuid = this.GET_UUID();
+    axios.post('http://192.168.43.135:8000/teller/logout/', {
       uuid: this.uuid,
     });
     this.DELETE_UUID();
