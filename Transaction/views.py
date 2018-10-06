@@ -36,9 +36,7 @@ class TransactionViewSet(ViewSet, APIView):
     def authenticate(self, request):
         retList = {}
         retList['teller_no'] = ''
-        print(request.data['mac'])
         mac = Transaction.objects.filter(Q(mac=request.data['mac']), Q(status='A') | Q(status='R')).first()
-        print(mac)
         if mac and request.data['uuid'] == '':
             uuidvar = mac.mac
             check = mac
@@ -54,7 +52,6 @@ class TransactionViewSet(ViewSet, APIView):
             retList['message'] = 'not your device'
             return Response(retList)
         if not check or check.status == 'C':
-            print('cancelled or not existing')
             retList['message'] = 'not a valid customer'
             return Response(retList)
         if not mac or (mac.uuid == check.uuid):
