@@ -105,23 +105,15 @@ class TellerViewSet(ViewSet, APIView):
         check.availability = True
         transaction = check.transaction
         transaction.status = 'CP'
-        print("why")
         transaction.time_ended = datetime.now()
         previous = Transaction.objects.filter(status='CP', service=transaction.service).order_by('-time_joined').first()
         currentstart = transaction.time_started.replace(tzinfo=None)
         currentend = transaction.time_ended.replace(tzinfo=None)
         currentduration = (currentend - currentstart).total_seconds()
-        print(previous)
-        print("why")
         prevstart = previous.time_started.replace(tzinfo=None)
-        print("WOW")
         prevend = previous.time_ended.replace(tzinfo=None)
-        print("START")
         prevduration = (prevend - prevstart).total_seconds()
-        print(currentduration)
-        print(prevduration)
         transaction.log = np.log(currentduration / prevduration)
-        print(transaction.log)
         transaction.save()
         check.transaction = None
         check.save()        
